@@ -136,7 +136,7 @@ const App: React.FC = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
-        checkPremiumStatus(session.user.id);
+        checkPremiumStatus(session.user);
         profileSubscription = supabase
           .channel(`profile-${session.user.id}`)
           .on('postgres_changes', { 
@@ -155,7 +155,7 @@ const App: React.FC = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
-        checkPremiumStatus(session.user.id);
+        checkPremiumStatus(session.user);
         if (!profileSubscription) {
           profileSubscription = supabase
             .channel(`profile-${session.user.id}`)
@@ -193,8 +193,9 @@ const App: React.FC = () => {
     setUserPlan(profile.plan_type || null);
   };
 
-  const checkPremiumStatus = async (userId: string) => {
-    if (!supabase) return;
+  const checkPremiumStatus = async (authUser: any) => {
+    if (!supabase || !authUser) return;
+    const userId = authUser.id;
     console.log('Checking premium status for:', userId);
     const { data, error } = await supabase.from('profiles').select('is_premium, subscription_until, plan_type').eq('id', userId).single();
     
@@ -203,9 +204,9 @@ const App: React.FC = () => {
         console.log('Profile missing, creating for user:', userId);
         const { error: insertError } = await supabase.from('profiles').insert({
           id: userId,
-          email: user?.email,
-          full_name: user?.user_metadata?.full_name,
-          avatar_url: user?.user_metadata?.avatar_url
+          email: authUser.email,
+          full_name: authUser.user_metadata?.full_name,
+          avatar_url: authUser.user_metadata?.avatar_url
         });
         if (insertError) console.error('Failed to create profile:', insertError);
       } else {
@@ -308,6 +309,8 @@ const App: React.FC = () => {
   const handleLogout = async () => {
     if (supabase) await supabase.auth.signOut();
     setRpmResult(null);
+    setIsPremium(false);
+    setUserPlan(null);
     localStorage.removeItem('rpm_result');
     setView('landing');
   };
