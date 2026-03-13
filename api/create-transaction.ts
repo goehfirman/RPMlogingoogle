@@ -63,6 +63,15 @@ export default async function handler(req: any, res: any) {
                 gross_amount
             },
             customer_details,
+            enabled_payments: [
+                "credit_card",
+                "bank_transfer",
+                "gopay",
+                "shopeepay",
+                "qris",
+                "indomaret",
+                "alfamart"
+            ],
             credit_card: {
                 secure: true
             },
