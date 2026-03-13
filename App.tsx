@@ -245,7 +245,31 @@ const App: React.FC = () => {
       const { token } = await createPaymentTransaction(orderId, plan.price, user.email || '', plan.id, user.id);
       (window as any).snap.pay(token, {
         onSuccess: async () => {
+          console.log('Payment success callback triggered');
+          
+          // Fallback: Update profile directly from client-side if webhook fails (Sandbox/Dev)
+          if (user) {
+            const now = new Date();
+            const expiry = plan.id === 'lifetime' 
+              ? new Date('2099-12-31T23:59:59Z') 
+              : plan.id === 'quarterly' 
+                ? new Date(now.setMonth(now.getMonth() + 3))
+                : new Date(now.setMonth(now.getMonth() + 1));
+
+            const { error: updateError } = await supabase.from('profiles').upsert({
+              id: user.id,
+              is_premium: true,
+              subscription_until: expiry.toISOString(),
+              plan_type: plan.id,
+              updated_at: new Date().toISOString()
+            });
+
+            if (updateError) console.error('Failed to update premium status client-side:', updateError);
+            else console.log('Premium status updated successfully in DB (client-side)');
+          }
+
           setIsPremium(true);
+          setUserPlan(plan.id);
           if (pendingFormData) await proceedWithGeneration(pendingFormData, pendingApiKey);
           else alert("Pembayaran sukses! Anda sekarang member Premium.");
         },
