@@ -213,7 +213,7 @@ const App: React.FC = () => {
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-1 cursor-pointer" onClick={() => setView('landing')}>
               <h1 className="text-xl font-bold text-white tracking-tight">
-                ngodingpake<span className="text-orange-500">ai</span>
+                RPMGenerator<span className="text-orange-500">SD</span>
               </h1>
             </div>
 
@@ -311,7 +311,7 @@ const App: React.FC = () => {
           </div>
         </div>
         <p className="text-slate-600 text-[10px] font-medium tracking-[0.2em] uppercase pt-4">
-          &copy; {new Date().getFullYear()} NGODINGPAKEAI - SISTEM DIGITAL GURU
+          &copy; {new Date().getFullYear()} RPMGENERATORSD - SISTEM DIGITAL GURU
         </p>
       </footer>
     </div>
