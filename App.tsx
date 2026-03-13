@@ -359,7 +359,7 @@ const App: React.FC = () => {
                 theme === 'dark' ? 'text-orange-500/80' : 'text-orange-600'
               }`}>
                 <FileText size={14} />
-                <span>1.7K <span className={`font-normal opacity-60 uppercase transition-all ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>PRD</span></span>
+                <span>{isPremium && subscriptionUntil ? `${Math.ceil((subscriptionUntil.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} H` : '1.7K'} <span className={`font-normal opacity-60 uppercase transition-all ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>{isPremium ? 'Sisa' : 'PRD'}</span></span>
               </div>
             </nav>
           </div>
