@@ -8,7 +8,7 @@ export const initializeSnap = () => {
   });
 };
 
-export const createPaymentTransaction = async (orderId: string, amount: number, customerEmail: string, planId: string) => {
+export const createPaymentTransaction = async (orderId: string, amount: number, customerEmail: string, planId: string, userId: string) => {
   const response = await fetch('/api/create-transaction', {
     method: 'POST',
     headers: {
@@ -20,7 +20,8 @@ export const createPaymentTransaction = async (orderId: string, amount: number, 
       customer_details: {
         email: customerEmail,
       },
-      plan_id: planId
+      plan_id: planId,
+      user_id: userId
     }),
   });
 

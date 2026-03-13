@@ -1,4 +1,5 @@
 import midtransClient from 'midtrans-client';
+import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req: any, res: any) {
     console.log('--- Create Transaction Request ---');
@@ -6,8 +7,14 @@ export default async function handler(req: any, res: any) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
-
-    const { MIDTRANS_SERVER_KEY, VITE_MIDTRANS_CLIENT_KEY } = process.env;
+    
+    // Use Server Side Env for Supabase (Service Role)
+    const { 
+        MIDTRANS_SERVER_KEY, 
+        VITE_MIDTRANS_CLIENT_KEY,
+        VITE_SUPABASE_URL,
+        SUPABASE_SERVICE_ROLE_KEY
+    } = process.env;
 
     if (!MIDTRANS_SERVER_KEY || !VITE_MIDTRANS_CLIENT_KEY) {
         console.error('CRITICAL: Midtrans keys are missing in environment variables!');
@@ -24,7 +31,29 @@ export default async function handler(req: any, res: any) {
             clientKey: VITE_MIDTRANS_CLIENT_KEY
         });
 
-        const { order_id, gross_amount, customer_details, plan_id } = req.body;
+        const supabase = createClient(VITE_SUPABASE_URL || '', SUPABASE_SERVICE_ROLE_KEY || '');
+
+        const { order_id, gross_amount, customer_details, plan_id, user_id } = req.body;
+        
+        // 1. Record transaction in Supabase first
+        const { error: dbError } = await supabase
+            .from('transactions')
+            .insert({
+                order_id,
+                user_id,
+                amount: gross_amount,
+                status: 'pending'
+            });
+
+        if (dbError) {
+            console.error('Supabase Transaction Recording Error:', dbError);
+            return res.status(500).json({ 
+                error: 'Gagal mencatat transaksi ke database.',
+                details: dbError.message 
+            });
+        }
+
+        console.log('Order ID recorded in DB:', order_id);
         console.log('Order ID:', order_id);
         console.log('Amount:', gross_amount);
 

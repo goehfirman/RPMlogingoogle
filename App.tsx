@@ -221,7 +221,7 @@ const App: React.FC = () => {
     setShowPricingModal(false);
     try {
       const orderId = `RPM-${Date.now()}`;
-      const { token } = await createPaymentTransaction(orderId, plan.price, user.email || '', plan.id);
+      const { token } = await createPaymentTransaction(orderId, plan.price, user.email || '', plan.id, user.id);
       (window as any).snap.pay(token, {
         onSuccess: async () => {
           setIsPremium(true);
