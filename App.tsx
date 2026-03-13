@@ -116,6 +116,7 @@ const App: React.FC = () => {
   const [view, setView] = useState<'landing' | 'form' | 'settings'>('landing');
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [userPlan, setUserPlan] = useState<string | null>(null);
 
   // Sync theme with body class
   useEffect(() => {
@@ -127,29 +128,76 @@ const App: React.FC = () => {
   useEffect(() => {
     if (!supabase) return;
 
+    initializeSnap();
+
+    // Set up Realtime listener for profile changes
+    let profileSubscription: any = null;
+    
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      if (session?.user) checkPremiumStatus(session.user.id);
+      if (session?.user) {
+        checkPremiumStatus(session.user.id);
+        profileSubscription = supabase
+          .channel(`profile-${session.user.id}`)
+          .on('postgres_changes', { 
+            event: 'UPDATE', 
+            schema: 'public', 
+            table: 'profiles',
+            filter: `id=eq.${session.user.id}`
+          }, (payload) => {
+            console.log('Real-time update received:', payload.new);
+            handleProfileUpdate(payload.new);
+          })
+          .subscribe();
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      if (session?.user) checkPremiumStatus(session.user.id);
-      else setIsPremium(false);
+      if (session?.user) {
+        checkPremiumStatus(session.user.id);
+        if (!profileSubscription) {
+          profileSubscription = supabase
+            .channel(`profile-${session.user.id}`)
+            .on('postgres_changes', { 
+              event: 'UPDATE', 
+              schema: 'public', 
+              table: 'profiles',
+              filter: `id=eq.${session.user.id}`
+            }, (payload) => {
+              handleProfileUpdate(payload.new);
+            })
+            .subscribe();
+        }
+      } else {
+        setIsPremium(false);
+        setUserPlan(null);
+        if (profileSubscription) {
+          supabase.removeChannel(profileSubscription);
+          profileSubscription = null;
+        }
+      }
     });
 
-    initializeSnap();
-
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+      if (profileSubscription) supabase.removeChannel(profileSubscription);
+    };
   }, []);
+
+  const handleProfileUpdate = (profile: any) => {
+    const now = new Date();
+    const expiry = profile.subscription_until ? new Date(profile.subscription_until) : null;
+    const active = profile.is_premium && (!expiry || expiry > now);
+    setIsPremium(active);
+    setUserPlan(profile.plan_type || null);
+  };
 
   const checkPremiumStatus = async (userId: string) => {
     if (!supabase) return;
-    const { data } = await supabase.from('profiles').select('is_premium, subscription_until').eq('id', userId).single();
+    const { data } = await supabase.from('profiles').select('is_premium, subscription_until, plan_type').eq('id', userId).single();
     if (data) {
-      const now = new Date();
-      const expiry = data.subscription_until ? new Date(data.subscription_until) : null;
-      setIsPremium(data.is_premium && (!expiry || expiry > now));
+      handleProfileUpdate(data);
     }
   };
 
@@ -399,8 +447,12 @@ const App: React.FC = () => {
                 <div className="flex items-center gap-3 mb-2">
                   <h3 className={`text-xl font-bold uppercase tracking-tight transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>Plan & Penggunaan</h3>
                   <span className={`px-2 py-0.5 text-[10px] font-bold rounded uppercase tracking-wider transition-all ${
-                    theme === 'dark' ? 'bg-slate-700 text-slate-400' : 'bg-slate-100 text-slate-500'
-                  }`}>Free</span>
+                    isPremium 
+                      ? 'bg-orange-500 text-white' 
+                      : (theme === 'dark' ? 'bg-slate-700 text-slate-400' : 'bg-slate-100 text-slate-500')
+                  }`}>
+                    {isPremium ? (userPlan === 'lifetime' ? 'Lifetime' : userPlan === 'quarterly' ? 'Quarterly' : 'Monthly') : 'Free'}
+                  </span>
                 </div>
                 <p className={`text-sm mb-8 transition-all ${theme === 'dark' ? 'text-slate-500' : 'text-slate-500'}`}>Penggunaan fitur kamu bulan ini.</p>
                 
@@ -425,7 +477,7 @@ const App: React.FC = () => {
                   <div className={`pt-4 border-t text-xs font-bold uppercase tracking-widest leading-relaxed transition-all ${
                     theme === 'dark' ? 'border-slate-700/30 text-slate-600' : 'border-slate-100 text-slate-400'
                   }`}>
-                    Tidak ada langganan aktif
+                    {isPremium ? 'Langganan Aktif' : 'Tidak ada langganan aktif'}
                   </div>
                 </div>
               </div>
