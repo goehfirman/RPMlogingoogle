@@ -117,6 +117,7 @@ const App: React.FC = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [userPlan, setUserPlan] = useState<string | null>(null);
+  const [subscriptionUntil, setSubscriptionUntil] = useState<Date | null>(null);
 
   // Sync theme with body class
   useEffect(() => {
@@ -191,6 +192,7 @@ const App: React.FC = () => {
     const active = profile.is_premium && (!expiry || expiry > now);
     setIsPremium(active);
     setUserPlan(profile.plan_type || null);
+    setSubscriptionUntil(expiry);
   };
 
   const checkPremiumStatus = async (authUser: any) => {
@@ -248,15 +250,15 @@ const App: React.FC = () => {
         onSuccess: async () => {
           console.log('Payment success callback triggered');
           
+          const now = new Date();
+          const expiry = plan.id === 'lifetime' 
+            ? new Date('2099-12-31T23:59:59Z') 
+            : plan.id === 'quarterly' 
+              ? new Date(now.setMonth(now.getMonth() + 3))
+              : new Date(now.setMonth(now.getMonth() + 1));
+
           // Fallback: Update profile directly from client-side if webhook fails (Sandbox/Dev)
           if (user) {
-            const now = new Date();
-            const expiry = plan.id === 'lifetime' 
-              ? new Date('2099-12-31T23:59:59Z') 
-              : plan.id === 'quarterly' 
-                ? new Date(now.setMonth(now.getMonth() + 3))
-                : new Date(now.setMonth(now.getMonth() + 1));
-
             const { error: updateError } = await supabase.from('profiles').upsert({
               id: user.id,
               is_premium: true,
@@ -271,6 +273,7 @@ const App: React.FC = () => {
 
           setIsPremium(true);
           setUserPlan(plan.id);
+          setSubscriptionUntil(expiry);
           if (pendingFormData) await proceedWithGeneration(pendingFormData, pendingApiKey);
           else alert("Pembayaran sukses! Anda sekarang member Premium.");
         },
@@ -311,6 +314,7 @@ const App: React.FC = () => {
     setRpmResult(null);
     setIsPremium(false);
     setUserPlan(null);
+    setSubscriptionUntil(null);
     localStorage.removeItem('rpm_result');
     setView('landing');
   };
@@ -502,18 +506,31 @@ const App: React.FC = () => {
                     {isPremium ? (userPlan === 'lifetime' ? 'Lifetime' : userPlan === 'quarterly' ? 'Quarterly' : 'Monthly') : 'Free'}
                   </span>
                 </div>
-                <p className={`text-sm mb-8 transition-all ${theme === 'dark' ? 'text-slate-500' : 'text-slate-500'}`}>Penggunaan fitur kamu bulan ini.</p>
+                <p className={`text-sm mb-8 transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>{isPremium ? 'Sisa waktu berlangganan' : 'Dapatkan akses premium untuk fitur tak terbatas.'}</p>
                 
                 <div className="space-y-8">
                   <div>
                     <div className="flex justify-between items-center mb-3">
-                      <span className={`text-xs font-bold uppercase tracking-widest transition-all ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>PRD</span>
-                      <span className={`text-xs font-bold transition-all ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>0 / 1</span>
+                      <span className={`text-xs font-bold uppercase tracking-widest transition-all ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>{isPremium ? 'Hari Tersisa' : 'Upgrade Sekarang'}</span>
+                      <span className={`text-xs font-bold transition-all ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                        {subscriptionUntil && isPremium ? (
+                          userPlan === 'lifetime' ? 'Selamanya' : `${Math.ceil((subscriptionUntil.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} Hari`
+                        ) : '0 Hari'}
+                      </span>
                     </div>
                     <div className={`h-1.5 w-full rounded-lg overflow-hidden border transition-all ${
                       theme === 'dark' ? 'bg-slate-800 border-slate-700/50' : 'bg-slate-100 border-slate-200'
                     }`}>
-                      <div className="h-full w-0 bg-orange-500"></div>
+                      <div 
+                        className="h-full bg-orange-500 transition-all duration-1000" 
+                        style={{ 
+                          width: !isPremium ? '0%' : (userPlan === 'lifetime' ? '100%' : `${(() => {
+                            const days = Math.ceil((subscriptionUntil!.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+                            const total = userPlan === 'quarterly' ? 90 : 30;
+                            return Math.min(100, Math.max(0, (days / total) * 100));
+                          })()}%`) 
+                        }}
+                      ></div>
                     </div>
                   </div>
                   
