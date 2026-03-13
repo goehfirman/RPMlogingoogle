@@ -184,6 +184,15 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => {
     }
   };
 
+  const handleSaveKey = () => {
+    if (!apiKey.trim()) {
+      alert("Mohon masukkan API Key terlebih dahulu.");
+      return;
+    }
+    localStorage.setItem('gemini_api_key', apiKey.trim());
+    alert("Kunci API berhasil disimpan!");
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!apiKey) return alert("API Key wajib diisi.");
@@ -309,7 +318,7 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => {
                <input 
                  type={showApiKey ? "text" : "password"} 
                  value={apiKey} 
-                 onChange={(e) => { setApiKey(e.target.value); localStorage.setItem('gemini_api_key', e.target.value); }}
+                 onChange={(e) => setApiKey(e.target.value)}
                  placeholder="Tempel Kunci di Sini..." 
                  className="w-full bg-slate-50 border border-slate-200 focus:border-purple-400 rounded-lg px-4 py-3 text-sm font-mono text-slate-700 placeholder:text-slate-400 outline-none transition-all"
                />
@@ -324,6 +333,13 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => {
                  {showApiKey ? <EyeOff size={20} /> : <Eye size={20} />}
              </button>
              <div className="h-8 w-px bg-slate-200"></div>
+              <button 
+                type="button"
+                onClick={handleSaveKey}
+                className="px-5 py-2.5 bg-purple-600 text-white text-xs font-bold rounded-lg hover:bg-purple-700 transition-all uppercase tracking-wide shadow-md"
+              >
+                Simpan Kunci
+              </button>
              <a 
               href="https://aistudio.google.com/app/apikey" 
               target="_blank" 
