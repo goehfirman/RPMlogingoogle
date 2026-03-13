@@ -103,9 +103,9 @@ const App: React.FC = () => {
           setIsLoading(false);
         }
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert("Gagal memproses pembayaran.");
+      alert("Gagal memproses pembayaran: " + (error.message || "Terjadi kesalahan teknis."));
       setIsLoading(false);
     }
   };
