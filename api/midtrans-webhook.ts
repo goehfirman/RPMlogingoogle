@@ -78,14 +78,24 @@ export default async function handler(req: any, res: any) {
                 .single();
 
             if (txData?.user_id) {
-                await supabase
+                console.log('Updating profile for user:', txData.user_id);
+                const { error: profileError } = await supabase
                     .from('profiles')
                     .update({ 
                         is_premium: true, 
                         subscription_until: expiryDate,
-                        plan_type: planId
+                        plan_type: planId,
+                        updated_at: new Date()
                     })
                     .eq('id', txData.user_id);
+                
+                if (profileError) {
+                    console.error('Failed to update profile:', profileError);
+                } else {
+                    console.log('Profile successfully updated to PREMIUM');
+                }
+            } else {
+                console.error('No matching user_id found for order_id:', orderId);
             }
         }
 

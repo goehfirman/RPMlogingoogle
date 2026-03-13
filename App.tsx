@@ -195,9 +195,30 @@ const App: React.FC = () => {
 
   const checkPremiumStatus = async (userId: string) => {
     if (!supabase) return;
-    const { data } = await supabase.from('profiles').select('is_premium, subscription_until, plan_type').eq('id', userId).single();
+    console.log('Checking premium status for:', userId);
+    const { data, error } = await supabase.from('profiles').select('is_premium, subscription_until, plan_type').eq('id', userId).single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') { // Single row not found
+        console.log('Profile missing, creating for user:', userId);
+        const { error: insertError } = await supabase.from('profiles').insert({
+          id: userId,
+          email: user?.email,
+          full_name: user?.user_metadata?.full_name,
+          avatar_url: user?.user_metadata?.avatar_url
+        });
+        if (insertError) console.error('Failed to create profile:', insertError);
+      } else {
+        console.error('Error fetching profile:', error);
+      }
+      return;
+    }
+    
     if (data) {
+      console.log('Profile data found:', data);
       handleProfileUpdate(data);
+    } else {
+      console.warn('No profile data found for user ID:', userId);
     }
   };
 

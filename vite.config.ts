@@ -12,5 +12,12 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000', // Change this if running functions on a different port/server
+        changeOrigin: true,
+        rewrite: (path) => path
+      }
+    }
   }
 });
