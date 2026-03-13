@@ -8,9 +8,10 @@ import { generateLKPD, generateSoal } from '../services/geminiService';
 interface RPMPreviewProps {
   data: RPMResult;
   onReset: () => void;
+  theme: 'dark' | 'light';
 }
 
-const RPMPreview: React.FC<RPMPreviewProps> = ({ data, onReset }) => {
+const RPMPreview: React.FC<RPMPreviewProps> = ({ data, onReset, theme }) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [activeModal, setActiveModal] = useState<'none' | 'lkpd' | 'soal'>('none');
   const [modalContent, setModalContent] = useState<string>('');
@@ -114,8 +115,12 @@ const RPMPreview: React.FC<RPMPreviewProps> = ({ data, onReset }) => {
   return (
     <div className="max-w-5xl mx-auto pb-20 relative">
       {/* Action Bar */}
-      <div className="sticky top-4 z-40 flex flex-wrap gap-3 justify-between items-center bg-white/80 backdrop-blur-xl border border-purple-200 p-4 rounded-xl shadow-lg shadow-purple-200/50 mb-8 no-print text-slate-900">
-        <button onClick={onReset} className="flex items-center gap-2 text-slate-500 hover:text-purple-600 font-bold transition uppercase text-xs tracking-wider">
+      <div className={`sticky top-4 z-40 flex flex-wrap gap-3 justify-between items-center backdrop-blur-xl border p-4 rounded-xl shadow-lg mb-8 no-print transition-all ${
+        theme === 'dark' ? 'bg-slate-900/80 border-slate-700/50 shadow-slate-900/50' : 'bg-white/80 border-purple-200 shadow-purple-100'
+      }`}>
+        <button onClick={onReset} className={`flex items-center gap-2 font-bold transition uppercase text-xs tracking-wider ${
+          theme === 'dark' ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-purple-600'
+        }`}>
           <ArrowLeft size={16} /> Ubah Data
         </button>
         <div className="flex flex-wrap gap-3">
@@ -389,18 +394,24 @@ const RPMPreview: React.FC<RPMPreviewProps> = ({ data, onReset }) => {
       {/* Modal untuk LKPD & Soal */}
       {activeModal !== 'none' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl w-full max-w-4xl h-[90vh] flex flex-col shadow-2xl border border-purple-100">
+          <div className={`rounded-2xl w-full max-w-4xl h-[90vh] flex flex-col shadow-2xl transition-all border ${
+            theme === 'dark' ? 'bg-slate-900 border-slate-700' : 'bg-white border-purple-100'
+          }`}>
             {/* Modal Header */}
-            <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-2xl">
+            <div className={`p-5 border-b flex justify-between items-center rounded-t-2xl transition-all ${
+              theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-100'
+            }`}>
               <div>
-                 <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                   {activeModal === 'lkpd' ? <FileText className="text-indigo-600" /> : <ClipboardList className="text-pink-600" />}
+                 <h3 className={`text-xl font-bold flex items-center gap-2 transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                   {activeModal === 'lkpd' ? <FileText className="text-indigo-500" /> : <ClipboardList className="text-pink-500" />}
                    {activeModal === 'lkpd' ? 'Lembar Kerja Peserta Didik' : 'Soal Evaluasi & Kunci Jawaban'}
                  </h3>
                  <p className="text-xs text-slate-500 mt-1">Dibuat otomatis oleh AI berdasarkan RPM aktif</p>
               </div>
-              <button onClick={() => setActiveModal('none')} className="p-2 hover:bg-slate-200 rounded-full transition-colors">
-                <X size={24} className="text-slate-500" />
+              <button onClick={() => setActiveModal('none')} className={`p-2 rounded-full transition-colors ${
+                theme === 'dark' ? 'hover:bg-slate-700 text-slate-400' : 'hover:bg-slate-200 text-slate-500'
+              }`}>
+                <X size={24} />
               </button>
             </div>
 
@@ -427,10 +438,14 @@ const RPMPreview: React.FC<RPMPreviewProps> = ({ data, onReset }) => {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 border-t border-slate-100 flex justify-end gap-3 bg-white rounded-b-2xl">
+            <div className={`p-4 border-t flex justify-end gap-3 rounded-b-2xl transition-all ${
+              theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'
+            }`}>
               <button 
                 onClick={() => setActiveModal('none')} 
-                className="px-5 py-2.5 text-slate-600 font-bold text-sm hover:bg-slate-50 rounded-lg transition"
+                className={`px-5 py-2.5 font-bold text-sm rounded-lg transition ${
+                  theme === 'dark' ? 'text-slate-400 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50'
+                }`}
               >
                 Tutup
               </button>

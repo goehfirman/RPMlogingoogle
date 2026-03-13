@@ -10,9 +10,10 @@ import { Loader2, Check, X, Sparkles, Eye, EyeOff, BookOpen, User, Calendar, Bra
 interface InputFormProps {
   onSubmit: (data: FormData, apiKey: string) => void;
   isLoading: boolean;
+  theme: 'dark' | 'light';
 }
 
-const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => {
+const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading, theme }) => {
   const [apiKey, setApiKey] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
   const today = new Date().toISOString().split('T')[0];
@@ -200,10 +201,14 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => {
   };
 
   const SectionTitle = ({ title, icon: Icon }: { title: string, icon: any }) => (
-    <div className="mb-8 mt-12 pb-4 border-b border-purple-200 flex items-center justify-between">
+    <div className={`mb-8 mt-12 pb-4 border-b flex items-center justify-between transition-all ${
+      theme === 'dark' ? 'border-purple-200 text-white' : 'border-purple-100 text-slate-800'
+    }`}>
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-purple-50 rounded-lg border border-purple-200 shadow-sm text-purple-600"><Icon size={18} /></div>
-        <h3 className="text-lg font-tech font-bold text-slate-800 tracking-wider uppercase">{title}</h3>
+        <div className={`p-2 rounded-lg border shadow-sm transition-all ${
+          theme === 'dark' ? 'bg-purple-500/10 border-purple-500/20 text-purple-400' : 'bg-purple-50 border-purple-200 text-purple-600'
+        }`}><Icon size={18} /></div>
+        <h3 className={`text-lg font-tech font-bold tracking-wider uppercase transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>{title}</h3>
       </div>
     </div>
   );
@@ -212,8 +217,12 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => {
     <label className="block text-[10px] font-bold text-slate-500 mb-2 uppercase tracking-widest">{label} {required && "*"}</label>
   );
 
-  const InputClasses = "w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-900 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 outline-none transition-all shadow-sm";
-  const SelectClasses = "w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-900 focus:border-purple-400 focus:ring-4 focus:ring-purple-100 outline-none appearance-none cursor-pointer transition-all shadow-sm";
+  const InputClasses = `w-full px-4 py-3 border rounded-lg text-sm font-medium transition-all shadow-sm outline-none ${
+    theme === 'dark' ? 'bg-slate-900/50 border-slate-700/50 text-white focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10' : 'bg-white border-slate-200 text-slate-900 focus:border-purple-400 focus:ring-4 focus:ring-purple-100'
+  }`;
+  const SelectClasses = `w-full px-4 py-3 border rounded-lg text-sm font-medium transition-all shadow-sm outline-none appearance-none cursor-pointer ${
+    theme === 'dark' ? 'bg-slate-900/50 border-slate-700/50 text-white focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10' : 'bg-white border-slate-200 text-slate-900 focus:border-purple-400 focus:ring-4 focus:ring-purple-100'
+  }`;
 
   const renderSuggestionInput = (field: 'cp' | 'tp' | 'materi', label: string, rows: number, placeholder: string) => {
     const isMultiSelect = field === 'tp' || field === 'materi';
@@ -224,7 +233,9 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => {
     if (field === 'materi' && !formData.tp) helperText = "Isi TP dulu untuk membuka saran AI";
 
     return (
-      <div className="relative group space-y-2 p-6 bg-white/50 border border-purple-100 rounded-xl hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100 transition-all duration-300">
+      <div className={`relative group space-y-2 p-6 border rounded-xl transition-all duration-300 ${
+        theme === 'dark' ? 'bg-slate-900/30 border-slate-700/30 hover:border-purple-500/50' : 'bg-white/50 border-purple-100 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100'
+      }`}>
           <div className="flex justify-between items-center mb-1">
                <InputLabel label={label} required />
                <div className="flex items-center gap-2">
@@ -305,10 +316,14 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white/60 backdrop-blur-xl border border-white/40 p-8 md:p-12 max-w-5xl mx-auto rounded-2xl shadow-xl ring-1 ring-purple-100">
+    <form onSubmit={handleSubmit} className={`backdrop-blur-xl border p-8 md:p-12 max-w-5xl mx-auto rounded-[2.5rem] shadow-2xl transition-all ${
+      theme === 'dark' ? 'bg-slate-900/40 border-slate-800/50' : 'bg-white/60 border-white/40 ring-1 ring-purple-50'
+    }`}>
       
       {/* Otorisasi Sistem */}
-      <div className="bg-white rounded-xl p-6 border border-purple-100 shadow-sm mb-10 relative group">
+      <div className={`rounded-2xl p-6 border shadow-sm mb-10 relative group transition-all ${
+        theme === 'dark' ? 'bg-slate-800/30 border-slate-700/50' : 'bg-white border-purple-50'
+      }`}>
         <div className="flex flex-col md:flex-row md:items-center gap-6 relative z-10">
           <div className="flex-1">
              <label className="text-[10px] font-bold text-purple-600 uppercase tracking-widest mb-2 block flex items-center gap-2">
@@ -479,12 +494,16 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => {
         <SectionTitle title="4. Profil Lulusan" icon={BrainCircuit} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Object.values(GraduateDimension).map((dim) => (
-            <label key={dim} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${formData.dimensions.includes(dim) ? 'bg-purple-50 border-purple-300 shadow-sm' : 'bg-white border-slate-100 hover:border-purple-200'}`}>
+            <label key={dim} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+              formData.dimensions.includes(dim) 
+                ? (theme === 'dark' ? 'bg-purple-500/10 border-purple-500/40 shadow-sm' : 'bg-purple-50 border-purple-300 shadow-sm') 
+                : (theme === 'dark' ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-100 hover:border-purple-200')
+            }`}>
               <input type="checkbox" checked={formData.dimensions.includes(dim)} onChange={() => handleDimensionChange(dim)} className="hidden" />
               <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.dimensions.includes(dim) ? 'bg-purple-600 border-purple-600' : 'bg-white border-slate-300'}`}>
                 {formData.dimensions.includes(dim) && <Check size={12} className="text-white" strokeWidth={4} />}
               </div>
-              <span className={`text-sm ${formData.dimensions.includes(dim) ? 'text-purple-900 font-semibold' : 'text-slate-600'}`}>{dim}</span>
+              <span className={`text-sm ${formData.dimensions.includes(dim) ? (theme === 'dark' ? 'text-purple-300 font-semibold' : 'text-purple-900 font-semibold') : (theme === 'dark' ? 'text-slate-400' : 'text-slate-600')}`}>{dim}</span>
             </label>
           ))}
         </div>

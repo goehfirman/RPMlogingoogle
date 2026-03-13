@@ -17,13 +17,16 @@ const LandingPage: React.FC<{
   onLogin: () => void; 
   onViewPlans: () => void;
   user: any;
-}> = ({ onStart, onLogin, onViewPlans, user }) => {
+  theme: 'dark' | 'light';
+}> = ({ onStart, onLogin, onViewPlans, user, theme }) => {
   return (
     <div className="space-y-20 pb-20">
       {/* Promo Banner */}
       <div className="flex justify-center">
-        <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 px-4 py-1.5 rounded-full text-xs font-bold text-orange-400 cursor-pointer hover:bg-orange-500/20 transition-all group">
-          <Zap size={14} className="fill-orange-400" />
+        <div className={`inline-flex items-center gap-2 border px-4 py-1.5 rounded-full text-xs font-bold cursor-pointer transition-all group ${
+          theme === 'dark' ? 'bg-orange-500/10 border-orange-500/20 text-orange-400 hover:bg-orange-500/20' : 'bg-orange-50 border-orange-200 text-orange-600 hover:bg-orange-100'
+        }`}>
+          <Zap size={14} className={theme === 'dark' ? 'fill-orange-400' : 'fill-orange-600'} />
           <span>DISKON hingga 40% khusus Ramadan</span>
           <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
         </div>
@@ -31,22 +34,24 @@ const LandingPage: React.FC<{
 
       {/* Hero Section */}
       <div className="text-center space-y-8 relative">
-        <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
+        <h2 className={`text-5xl md:text-7xl font-bold tracking-tight transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
           Mau ngapain hari ini?
         </h2>
         
         {/* Feature Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto pt-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto pt-10 text-center md:text-left">
           {/* Card 1: Bikin RPM */}
           <div 
             onClick={onStart}
-            className="bg-slate-800/40 backdrop-blur-xl border border-slate-700/50 p-8 rounded-3xl text-left hover:bg-slate-800/60 hover:border-slate-600 transition-all cursor-pointer group relative overflow-hidden"
+            className={`backdrop-blur-xl border p-8 rounded-[2.5rem] transition-all cursor-pointer group relative overflow-hidden ${
+              theme === 'dark' ? 'bg-slate-800/40 border-slate-700/50 hover:bg-slate-800/60 hover:border-slate-600' : 'bg-white border-slate-200 hover:shadow-xl hover:shadow-slate-200/50 hover:border-orange-200'
+            }`}
           >
             <div className="bg-orange-500/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-6 border border-orange-500/30 group-hover:scale-110 transition-transform">
               <FileText className="text-orange-500" size={24} />
             </div>
-            <h3 className="text-xl font-bold mb-3 text-white">Bikin RPM</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">
+            <h3 className={`text-xl font-bold mb-3 transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>Bikin RPM</h3>
+            <p className={`text-sm leading-relaxed transition-all ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
               Dari ide jadi rencana pembelajaran yang siap dipake AI.
             </p>
           </div>
@@ -54,36 +59,42 @@ const LandingPage: React.FC<{
           {/* Card 2: Tools Ranking (Plans) */}
           <div 
             onClick={onViewPlans}
-            className="bg-slate-800/40 backdrop-blur-xl border border-slate-700/50 p-8 rounded-3xl text-left hover:bg-slate-800/60 hover:border-slate-600 transition-all cursor-pointer group"
+            className={`backdrop-blur-xl border p-8 rounded-[2.5rem] transition-all cursor-pointer group ${
+              theme === 'dark' ? 'bg-slate-800/40 border-slate-700/50 hover:bg-slate-800/60 hover:border-slate-600' : 'bg-white border-slate-200 hover:shadow-xl hover:shadow-slate-200/50 hover:border-green-200'
+            }`}
           >
             <div className="bg-green-500/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-6 border border-green-500/30 group-hover:scale-110 transition-transform">
               <LayoutGrid className="text-green-500" size={24} />
             </div>
-            <h3 className="text-xl font-bold mb-3 text-white">Pilih Paket</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">
+            <h3 className={`text-xl font-bold mb-3 transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>Pilih Paket</h3>
+            <p className={`text-sm leading-relaxed transition-all ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
               Aktivasi akses premium untuk fitur generator tanpa batas.
             </p>
           </div>
 
           {/* Card 3: Coaching */}
-          <div className="bg-slate-800/40 backdrop-blur-xl border border-slate-700/50 p-8 rounded-3xl text-left hover:bg-slate-800/60 hover:border-slate-600 transition-all cursor-pointer group">
+          <div className={`backdrop-blur-xl border p-8 rounded-[2.5rem] transition-all cursor-pointer group ${
+            theme === 'dark' ? 'bg-slate-800/40 border-slate-700/50 hover:bg-slate-800/60 hover:border-slate-600' : 'bg-white border-slate-200 hover:shadow-xl hover:shadow-slate-200/50 hover:border-blue-200'
+          }`}>
             <div className="bg-blue-500/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-6 border border-blue-500/30 group-hover:scale-110 transition-transform">
               <Users className="text-blue-500" size={24} />
             </div>
-            <h3 className="text-xl font-bold mb-3 text-white">Coaching</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">
+            <h3 className={`text-xl font-bold mb-3 transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>Coaching</h3>
+            <p className={`text-sm leading-relaxed transition-all ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
               Ngobrol langsung sama Kang Guru Corp, mau belajar atau konsultasi.
             </p>
           </div>
 
           {/* Card 4: Belajar */}
-          <div className="bg-slate-800/40 backdrop-blur-xl border border-slate-700/50 p-8 rounded-3xl text-left opacity-60 relative group">
+          <div className={`backdrop-blur-xl border p-8 rounded-[2.5rem] transition-all opacity-60 relative group ${
+            theme === 'dark' ? 'bg-slate-800/40 border-slate-700/50 hover:opacity-100' : 'bg-white border-slate-200 hover:opacity-100'
+          }`}>
             <span className="absolute top-4 right-4 bg-slate-700 px-2 py-1 rounded-lg text-[10px] font-bold text-white uppercase tracking-wider">Coming Soon</span>
             <div className="bg-purple-500/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-6 border border-purple-500/30">
               <BookOpen className="text-purple-500" size={24} />
             </div>
-            <h3 className="text-xl font-bold mb-3 text-white">Belajar</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">
+            <h3 className={`text-xl font-bold mb-3 transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>Belajar</h3>
+            <p className={`text-sm leading-relaxed transition-all ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
               Konsep dasar bikin aplikasi dan cara menerapkan AI tools.
             </p>
           </div>
@@ -104,6 +115,13 @@ const App: React.FC = () => {
   const [pendingApiKey, setPendingApiKey] = useState<string>('');
   const [view, setView] = useState<'landing' | 'form' | 'settings'>('landing');
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  // Sync theme with body class
+  useEffect(() => {
+    if (theme === 'light') document.body.classList.add('light-mode');
+    else document.body.classList.remove('light-mode');
+  }, [theme]);
 
   // Auth & Snap Initialization
   useEffect(() => {
@@ -202,41 +220,56 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F172A] font-sans text-slate-200 selection:bg-purple-500/30 relative overflow-x-hidden">
+    <div className={`min-h-screen font-sans selection:bg-purple-500/30 relative overflow-x-hidden transition-colors duration-300 ${
+      theme === 'dark' ? 'bg-[#0F172A] text-slate-200' : 'bg-[#F1F5F9] text-slate-900'
+    }`}>
       {/* Background Decor */}
       <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[120px]"></div>
+        <div className={`absolute top-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full blur-[120px] transition-opacity duration-1000 ${
+          theme === 'dark' ? 'bg-purple-600/10 opacity-100' : 'bg-purple-600/5 opacity-0'
+        }`}></div>
+        <div className={`absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full blur-[120px] transition-opacity duration-1000 ${
+          theme === 'dark' ? 'bg-blue-600/10 opacity-100' : 'bg-blue-600/5 opacity-0'
+        }`}></div>
       </div>
 
-      <header className="sticky top-0 z-50 border-b border-slate-800/50 bg-[#0F172A]/80 backdrop-blur-xl">
+      <header className={`sticky top-0 z-50 border-b backdrop-blur-xl transition-all ${
+        theme === 'dark' ? 'border-slate-800/50 bg-[#0F172A]/80' : 'border-slate-200 bg-white/80'
+      }`}>
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-1 cursor-pointer" onClick={() => setView('landing')}>
-              <h1 className="text-xl font-bold text-white tracking-tight">
+              <h1 className={`text-xl font-bold tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
                 RPMGenerator<span className="text-orange-500">SD</span>
               </h1>
             </div>
 
             <nav className="hidden lg:flex items-center gap-6">
-              <div className="flex items-center gap-1.5 px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full text-xs font-bold text-green-500">
+              <div className={`flex items-center gap-1.5 px-3 py-1 border rounded-full text-xs font-bold transition-all ${
+                theme === 'dark' ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-green-50/50 border-green-500/20 text-green-600'
+              }`}>
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                 <span>LIVE</span>
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-slate-400 font-bold">
+              <div className={`flex items-center gap-1.5 text-xs font-bold transition-all ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
                 <Users size={14} />
                 <span>2.5K <span className="font-normal opacity-60">User</span></span>
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-slate-400 font-bold text-orange-500/80">
+              <div className={`flex items-center gap-1.5 text-xs font-bold transition-all ${
+                theme === 'dark' ? 'text-orange-500/80' : 'text-orange-600'
+              }`}>
                 <FileText size={14} />
-                <span>1.7K <span className="font-normal opacity-60 text-slate-400 uppercase">PRD</span></span>
+                <span>1.7K <span className={`font-normal opacity-60 uppercase transition-all ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>PRD</span></span>
               </div>
             </nav>
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="p-2 text-slate-400 hover:text-white transition-colors">
-              <Sun size={20} />
+            <button 
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-2 text-slate-400 hover:text-white transition-colors"
+            >
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} className="text-slate-600" />}
             </button>
             
             {user ? (
@@ -261,7 +294,9 @@ const App: React.FC = () => {
                 {/* Avatar / Trigger */}
                 <button 
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="w-10 h-10 rounded-full border-2 border-slate-700/50 overflow-hidden hover:border-orange-500 transition-all shadow-lg"
+                  className={`w-10 h-10 rounded-full border-2 overflow-hidden transition-all shadow-lg ${
+                    theme === 'dark' ? 'border-slate-700/50 hover:border-orange-500' : 'border-slate-200 hover:border-orange-500'
+                  }`}
                 >
                   <img 
                     src={user.user_metadata?.avatar_url || "https://i.ibb.co.com/1fQ81J6v/LOGO-PEKAYON-09.jpg"} 
@@ -277,29 +312,42 @@ const App: React.FC = () => {
                       className="fixed inset-0 z-10" 
                       onClick={() => setShowUserMenu(false)}
                     ></div>
-                    <div className="absolute right-0 top-full mt-3 w-64 bg-[#1E293B] border border-slate-700/50 rounded-2xl shadow-2xl z-20 overflow-hidden animate-fade-in-up">
+                    <div className={`absolute right-0 top-full mt-3 w-64 border rounded-2xl shadow-2xl z-20 overflow-hidden animate-fade-in-up transition-all ${
+                      theme === 'dark' ? 'bg-[#1E293B] border-slate-700/50' : 'bg-white border-slate-200'
+                    }`}>
                       {/* User Info */}
-                      <div className="p-4 border-b border-slate-700/50 bg-slate-800/20">
-                        <p className="text-sm font-bold text-white truncate">{user.user_metadata?.full_name || user.email?.split('@')[0]}</p>
-                        <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
+                      <div className={`p-4 border-b transition-all ${
+                        theme === 'dark' ? 'border-slate-700/50 bg-slate-800/20 text-white' : 'border-slate-100 bg-slate-50 text-slate-900'
+                      }`}>
+                        <p className="text-sm font-bold truncate">{user.user_metadata?.full_name || user.email?.split('@')[0]}</p>
+                        <p className={`text-[11px] truncate transition-all ${theme === 'dark' ? 'text-slate-500' : 'text-slate-500'}`}>{user.email}</p>
                       </div>
 
                       {/* Menu Items */}
                       <div className="p-2">
                         <button 
                           onClick={() => { setView('settings'); setShowUserMenu(false); }}
-                          className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-xl transition-all"
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold transition-all rounded-xl ${
+                            theme === 'dark' ? 'text-slate-300 hover:text-white hover:bg-slate-700/50' : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
+                          }`}
                         >
                           <Settings size={16} />
                           Pengaturan
                         </button>
-                        <button className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-xl transition-all">
+                        <button className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold transition-all rounded-xl ${
+                          theme === 'dark' ? 'text-slate-300 hover:text-white hover:bg-slate-700/50' : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
+                        }`}>
                           <HelpCircle size={16} />
                           Bantuan
                         </button>
-                        <button className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-xl transition-all">
-                          <Sun size={16} />
-                          Light mode
+                        <button 
+                          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold transition-all rounded-xl ${
+                            theme === 'dark' ? 'text-slate-300 hover:text-white hover:bg-slate-700/50' : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100'
+                          }`}
+                        >
+                          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+                          {theme === 'dark' ? 'Light mode' : 'Dark mode'}
                         </button>
                       </div>
 
@@ -330,7 +378,7 @@ const App: React.FC = () => {
 
       <main className="relative z-10 max-w-7xl mx-auto px-6 pt-12">
         {rpmResult ? (
-          <RPMPreview data={rpmResult} onReset={() => { setRpmResult(null); localStorage.removeItem('rpm_result'); setView('landing'); }} />
+          <RPMPreview theme={theme} data={rpmResult} onReset={() => { setRpmResult(null); localStorage.removeItem('rpm_result'); setView('landing'); }} />
         ) : view === 'settings' && user ? (
           <div className="max-w-4xl mx-auto animate-fade-in-up">
             <div className="flex items-center gap-4 mb-10">
@@ -345,39 +393,49 @@ const App: React.FC = () => {
             
             <div className="space-y-8">
               {/* Plan & Usage */}
-              <div className="bg-slate-800/20 border border-slate-700/50 rounded-[2rem] p-8 md:p-10">
+              <div className={`border rounded-[2rem] p-8 md:p-10 transition-all ${
+                theme === 'dark' ? 'bg-slate-800/20 border-slate-700/50' : 'bg-white border-slate-200 shadow-sm'
+              }`}>
                 <div className="flex items-center gap-3 mb-2">
-                  <h3 className="text-xl font-bold text-white uppercase tracking-tight">Plan & Penggunaan</h3>
-                  <span className="px-2 py-0.5 bg-slate-700 text-slate-400 text-[10px] font-bold rounded uppercase tracking-wider">Free</span>
+                  <h3 className={`text-xl font-bold uppercase tracking-tight transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>Plan & Penggunaan</h3>
+                  <span className={`px-2 py-0.5 text-[10px] font-bold rounded uppercase tracking-wider transition-all ${
+                    theme === 'dark' ? 'bg-slate-700 text-slate-400' : 'bg-slate-100 text-slate-500'
+                  }`}>Free</span>
                 </div>
-                <p className="text-sm text-slate-500 mb-8">Penggunaan fitur kamu bulan ini.</p>
+                <p className={`text-sm mb-8 transition-all ${theme === 'dark' ? 'text-slate-500' : 'text-slate-500'}`}>Penggunaan fitur kamu bulan ini.</p>
                 
                 <div className="space-y-8">
                   <div>
                     <div className="flex justify-between items-center mb-3">
-                      <span className="text-xs font-bold text-slate-300 uppercase tracking-widest">PRD</span>
-                      <span className="text-xs font-bold text-slate-400">0 / 1</span>
+                      <span className={`text-xs font-bold uppercase tracking-widest transition-all ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>PRD</span>
+                      <span className={`text-xs font-bold transition-all ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>0 / 1</span>
                     </div>
-                    <div className="h-1.5 w-full bg-slate-800 rounded-lg overflow-hidden border border-slate-700/50">
+                    <div className={`h-1.5 w-full rounded-lg overflow-hidden border transition-all ${
+                      theme === 'dark' ? 'bg-slate-800 border-slate-700/50' : 'bg-slate-100 border-slate-200'
+                    }`}>
                       <div className="h-full w-0 bg-orange-500"></div>
                     </div>
                   </div>
                   
-                  <div className="flex justify-between items-center py-6 border-t border-slate-700/30">
-                    <span className="text-xs font-bold text-slate-300 uppercase tracking-widest">Chat</span>
-                    <span className="text-xs font-medium text-slate-500 italic">Tidak tersedia di plan ini — upgrade untuk menggunakan fitur ini</span>
+                  <div className={`flex justify-between items-center py-6 border-t transition-all ${theme === 'dark' ? 'border-slate-700/30' : 'border-slate-100'}`}>
+                    <span className={`text-xs font-bold uppercase tracking-widest transition-all ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>Chat</span>
+                    <span className={`text-xs font-medium italic transition-all ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>Tidak tersedia di plan ini — upgrade untuk menggunakan fitur ini</span>
                   </div>
                   
-                  <div className="pt-4 border-t border-slate-700/30 text-xs font-bold text-slate-600 uppercase tracking-widest leading-relaxed">
+                  <div className={`pt-4 border-t text-xs font-bold uppercase tracking-widest leading-relaxed transition-all ${
+                    theme === 'dark' ? 'border-slate-700/30 text-slate-600' : 'border-slate-100 text-slate-400'
+                  }`}>
                     Tidak ada langganan aktif
                   </div>
                 </div>
               </div>
 
               {/* Upgrade Plan */}
-              <div className="bg-slate-800/20 border border-slate-700/50 rounded-[2rem] p-8 md:p-10">
-                <h3 className="text-xl font-bold text-white mb-4 tracking-tight">Upgrade Plan</h3>
-                <p className="text-sm text-slate-500 mb-8 leading-relaxed">
+              <div className={`border rounded-[2rem] p-8 md:p-10 transition-all ${
+                theme === 'dark' ? 'bg-slate-800/20 border-slate-700/50' : 'bg-white border-slate-200 shadow-sm'
+              }`}>
+                <h3 className={`text-xl font-bold mb-4 tracking-tight transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>Upgrade Plan</h3>
+                <p className={`text-sm mb-8 leading-relaxed transition-all ${theme === 'dark' ? 'text-slate-500' : 'text-slate-500'}`}>
                   Upgrade untuk mendapatkan lebih banyak PRD, chat, dan fitur premium lainnya.
                 </p>
                 <button 
@@ -389,12 +447,16 @@ const App: React.FC = () => {
               </div>
 
               {/* Profile */}
-              <div className="bg-slate-800/20 border border-slate-700/50 rounded-[2rem] p-8 md:p-10">
-                <h3 className="text-xl font-bold text-white mb-2 tracking-tight">Profil</h3>
-                <p className="text-sm text-slate-500 mb-10">Informasi akun kamu.</p>
+              <div className={`border rounded-[2rem] p-8 md:p-10 transition-all ${
+                theme === 'dark' ? 'bg-slate-800/20 border-slate-700/50' : 'bg-white border-slate-200 shadow-sm'
+              }`}>
+                <h3 className={`text-xl font-bold mb-2 tracking-tight transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>Profil</h3>
+                <p className={`text-sm mb-10 transition-all ${theme === 'dark' ? 'text-slate-500' : 'text-slate-500'}`}>Informasi akun kamu.</p>
                 
                 <div className="flex items-center gap-5 mb-12">
-                  <div className="w-20 h-20 rounded-3xl border-2 border-slate-700/50 overflow-hidden shadow-2xl">
+                  <div className={`w-20 h-20 rounded-3xl border-2 overflow-hidden shadow-2xl transition-all ${
+                    theme === 'dark' ? 'border-slate-700/50' : 'border-slate-100'
+                  }`}>
                     <img 
                       src={user.user_metadata?.avatar_url || "https://i.ibb.co.com/1fQ81J6v/LOGO-PEKAYON-09.jpg"} 
                       alt="Profile" 
@@ -402,22 +464,26 @@ const App: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <p className="text-xl font-bold text-white tracking-tight">{user.user_metadata?.full_name || user.email?.split('@')[0]}</p>
+                    <p className={`text-xl font-bold tracking-tight transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>{user.user_metadata?.full_name || user.email?.split('@')[0]}</p>
                     <p className="text-sm text-slate-500 font-medium">{user.email}</p>
                   </div>
                 </div>
                 
-                <div className="space-y-8 py-10 border-t border-slate-700/30">
+                <div className={`space-y-8 py-10 border-t transition-all ${theme === 'dark' ? 'border-slate-700/30' : 'border-slate-100'}`}>
                   <div className="space-y-3">
                     <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Nama</label>
-                    <div className="bg-slate-800/40 border border-slate-700/50 px-6 py-4 rounded-2xl text-slate-300 font-bold text-sm">
+                    <div className={`border px-6 py-4 rounded-2xl font-bold text-sm transition-all ${
+                      theme === 'dark' ? 'bg-slate-800/40 border-slate-700/50 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-800'
+                    }`}>
                       {user.user_metadata?.full_name || user.email?.split('@')[0]}
                     </div>
                   </div>
                   
                   <div className="space-y-3">
                     <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Email</label>
-                    <div className="bg-slate-800/40 border border-slate-700/50 px-6 py-4 rounded-2xl text-slate-500 font-bold text-sm italic">
+                    <div className={`border px-6 py-4 rounded-2xl font-bold text-sm italic transition-all ${
+                      theme === 'dark' ? 'bg-slate-800/40 border-slate-700/50 text-slate-500' : 'bg-slate-50 border-slate-200 text-slate-500'
+                    }`}>
                       {user.email}
                     </div>
                     <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest pl-1">Email tidak dapat diubah</p>
@@ -429,6 +495,7 @@ const App: React.FC = () => {
         ) : view === 'landing' ? (
           <LandingPage 
             user={user} 
+            theme={theme}
             onStart={() => {
               if (!user) handleGoogleLogin();
               else setView('form');
@@ -436,24 +503,27 @@ const App: React.FC = () => {
             onLogin={handleGoogleLogin}
             onViewPlans={() => setShowPricingModal(true)}
           />
-        ) : (
+        ) : view === 'form' ? (
           <div className="max-w-4xl mx-auto animate-fade-in-up">
             <div className="flex items-center gap-4 mb-8">
               <button 
                 onClick={() => setView('landing')}
-                className="p-2 bg-slate-800 border border-slate-700 rounded-xl text-slate-400 hover:text-white transition-all"
+                className={`p-2 border rounded-xl transition-all ${
+                  theme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white' : 'bg-white border-slate-200 text-slate-500 hover:text-slate-900 shadow-sm'
+                }`}
               >
                 <ArrowRight size={20} className="rotate-180" />
               </button>
-              <h2 className="text-2xl font-bold text-white">Buat Dokumen RPM Baru</h2>
+              <h2 className={`text-2xl font-bold transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>Buat Dokumen RPM Baru</h2>
             </div>
-            <InputForm onSubmit={handleSubmit} isLoading={isLoading} />
+            <InputForm theme={theme} onSubmit={handleSubmit} isLoading={isLoading} />
           </div>
-        )}
+        ) : null}
       </main>
 
       {showPricingModal && (
         <PricingModal 
+          theme={theme}
           onSelectPlan={handleSelectPlan} 
           onClose={() => setShowPricingModal(false)} 
         />

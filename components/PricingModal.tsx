@@ -5,15 +5,22 @@ import { Check, Zap, Star, ShieldCheck, X, Clock, Calendar } from 'lucide-react'
 interface PricingModalProps {
   onSelectPlan: (plan: Plan) => void;
   onClose: () => void;
+  theme: 'dark' | 'light';
 }
 
-const PricingModal: React.FC<PricingModalProps> = ({ onSelectPlan, onClose }) => {
+const PricingModal: React.FC<PricingModalProps> = ({ onSelectPlan, onClose, theme }) => {
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
-      <div className="bg-[#1E293B] border border-slate-700/50 rounded-[2.5rem] shadow-2xl w-full max-w-4xl overflow-hidden relative animate-scale-in">
+    <div className={`fixed inset-0 z-[60] flex items-center justify-center p-4 backdrop-blur-md animate-fade-in transition-all ${
+      theme === 'dark' ? 'bg-slate-950/80' : 'bg-slate-500/30'
+    }`}>
+      <div className={`border rounded-[2.5rem] shadow-2xl w-full max-w-4xl overflow-hidden relative animate-scale-in transition-all ${
+        theme === 'dark' ? 'bg-[#1E293B] border-slate-700/50' : 'bg-white border-slate-200'
+      }`}>
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-full transition-all z-10"
+          className={`absolute top-6 right-6 p-2 rounded-full transition-all z-10 ${
+            theme === 'dark' ? 'text-slate-400 hover:text-white hover:bg-slate-700/50' : 'text-slate-400 hover:text-slate-900 hover:bg-slate-100'
+          }`}
         >
           <X size={24} />
         </button>
@@ -24,11 +31,13 @@ const PricingModal: React.FC<PricingModalProps> = ({ onSelectPlan, onClose }) =>
             <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
             
             <div className="relative z-10">
-              <div className="inline-flex p-4 bg-orange-500/10 rounded-3xl mb-8 border border-orange-500/20">
+              <div className={`inline-flex p-4 rounded-3xl mb-8 border transition-all ${
+                theme === 'dark' ? 'bg-orange-500/10 border-orange-500/20' : 'bg-orange-50 border-orange-200'
+              }`}>
                 <Zap className="text-orange-500" size={32} />
               </div>
-              <h3 className="text-3xl font-bold mb-4 tracking-tight">Pilih Paket Premium</h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-10">
+              <h3 className={`text-3xl font-bold mb-4 tracking-tight transition-all ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>Pilih Paket Premium</h3>
+              <p className={`text-sm leading-relaxed mb-10 transition-all ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
                 Buka seluruh potensi kecerdasan buatan untuk membantu administrasi mengajar Anda menjadi lebih cepat dan profesional.
               </p>
 
@@ -43,7 +52,7 @@ const PricingModal: React.FC<PricingModalProps> = ({ onSelectPlan, onClose }) =>
                     <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/30">
                       <Check size={12} className="text-green-500" strokeWidth={3} />
                     </div>
-                    <span className="text-slate-300">{feature}</span>
+                    <span className={theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}>{feature}</span>
                   </div>
                 ))}
               </div>
@@ -66,8 +75,8 @@ const PricingModal: React.FC<PricingModalProps> = ({ onSelectPlan, onClose }) =>
                   onClick={() => onSelectPlan(plan)}
                   className={`group relative flex items-center justify-between p-6 rounded-3xl transition-all duration-300 text-left border-2 ${
                     plan.id === 'lifetime' 
-                      ? 'bg-orange-500/5 border-orange-500/40 shadow-lg shadow-orange-500/5 hover:bg-orange-500/10' 
-                      : 'bg-slate-800/20 border-slate-700/50 hover:bg-slate-800/40 hover:border-slate-600'
+                      ? (theme === 'dark' ? 'bg-orange-500/5 border-orange-500/40 shadow-lg shadow-orange-500/5 hover:bg-orange-500/10' : 'bg-orange-50 border-orange-500/40 shadow-xl shadow-orange-500/5 hover:bg-orange-100')
+                      : (theme === 'dark' ? 'bg-slate-800/20 border-slate-700/50 hover:bg-slate-800/40 hover:border-slate-600' : 'bg-slate-50 border-slate-200 hover:bg-white hover:border-orange-200 hover:shadow-xl hover:shadow-slate-200/50')
                   }`}
                 >
                   {plan.id === 'lifetime' && (
@@ -77,22 +86,26 @@ const PricingModal: React.FC<PricingModalProps> = ({ onSelectPlan, onClose }) =>
                   )}
                   
                   <div className="flex gap-5 items-center">
-                    <div className={`p-3.5 rounded-2xl ${
+                    <div className={`p-3.5 rounded-2xl transition-all border border-white/5 ${
                       plan.id === 'lifetime' 
                         ? 'bg-orange-500/20 text-orange-500' 
-                        : 'bg-slate-700/50 text-slate-400 group-hover:text-slate-200'
-                    } transition-all border border-white/5`}>
+                        : (theme === 'dark' ? 'bg-slate-700/50 text-slate-400 group-hover:text-slate-200' : 'bg-slate-100 text-slate-500 group-hover:text-slate-900')
+                    }`}>
                       {plan.id === 'monthly' ? <Clock size={22} /> : plan.id === 'quarterly' ? <Calendar size={22} /> : <Zap size={22} />}
                     </div>
                     <div>
-                      <h4 className="font-bold text-white text-lg group-hover:text-orange-400 transition-colors tracking-tight">{plan.name}</h4>
-                      <p className="text-xs text-slate-500 font-medium">{plan.description}</p>
+                      <h4 className={`font-bold text-lg transition-colors tracking-tight ${
+                        theme === 'dark' ? 'text-white group-hover:text-orange-400' : 'text-slate-900 group-hover:text-orange-600'
+                      }`}>{plan.name}</h4>
+                      <p className={`text-xs font-medium transition-all ${theme === 'dark' ? 'text-slate-500' : 'text-slate-500'}`}>{plan.description}</p>
                     </div>
                   </div>
 
                   <div className="text-right">
-                    <div className="text-2xl font-black text-white group-hover:text-orange-500 transition-colors">
-                      <span className="text-sm font-bold text-slate-500 mr-1">IDR</span>
+                    <div className={`text-2xl font-black transition-colors ${
+                      theme === 'dark' ? 'text-white group-hover:text-orange-500' : 'text-slate-900 group-hover:text-orange-600'
+                    }`}>
+                      <span className={`text-sm font-bold mr-1 ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>IDR</span>
                       {plan.price.toLocaleString('id-ID')}
                     </div>
                     <div className="text-[9px] text-slate-600 font-black uppercase tracking-widest mt-1">Pembayaran Sekali</div>
