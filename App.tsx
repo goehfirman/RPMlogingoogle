@@ -72,7 +72,7 @@ const LandingPage: React.FC<{
             </div>
             <h3 className="text-xl font-bold mb-3 text-white">Coaching</h3>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Ngobrol langsung sama Raf Dev, mau belajar atau konsultasi.
+              Ngobrol langsung sama Kang Guru Corp, mau belajar atau konsultasi.
             </p>
           </div>
 
@@ -305,8 +305,8 @@ const App: React.FC = () => {
         <div className="flex items-center justify-center gap-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
           <span>Product by</span>
           <div className="flex items-center gap-2 bg-slate-800/50 border border-slate-700/50 px-3 py-1.5 rounded-full">
-            <img src="https://github.com/goehfirman.png" className="w-5 h-5 rounded-full" alt="Raf Dev" />
-            <span className="text-slate-300">Raf Dev</span>
+            <img src="https://i.ibb.co.com/1fQ81J6v/LOGO-PEKAYON-09.jpg" className="w-5 h-5 rounded-full" alt="Kang Guru Corp" />
+            <span className="text-slate-300">Kang Guru Corp</span>
             <span className="text-[10px] bg-red-500/10 text-red-500 px-1.5 py-0.5 rounded ml-1">15.1K</span>
           </div>
         </div>
