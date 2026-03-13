@@ -323,7 +323,7 @@ const App: React.FC = () => {
   };
 
   const getAvatarUrl = () => {
-    return profile?.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "https://i.ibb.co.com/1fQ81J6v/LOGO-PEKAYON-09.jpg";
+    return profile?.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "https://i.ibb.co.com/BKcq12h0/Desain-tanpa-judul-8.png";
   };
 
   return (
@@ -656,8 +656,8 @@ const App: React.FC = () => {
       <footer className="relative z-10 pt-20 pb-10 text-center space-y-4">
         <div className="flex items-center justify-center gap-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
           <span>Product by</span>
-          <div className="flex items-center gap-2 bg-slate-800/50 border border-slate-700/50 px-3 py-1.5 rounded-full">
-            <img src="https://i.ibb.co.com/1fQ81J6v/LOGO-PEKAYON-09.jpg" className="w-5 h-5 rounded-full" alt="Kang Guru Corp" />
+          <div className="flex items-center gap-2 bg-slate-800/50 border border-slate-700/50 px-3 py-1.5 rounded-full text-center">
+            <img src="https://i.ibb.co.com/BKcq12h0/Desain-tanpa-judul-8.png" className="w-5 h-5 rounded-full" alt="Kang Guru Corp" />
             <span className="text-slate-300">Kang Guru Corp</span>
             <span className="text-[10px] bg-red-500/10 text-red-500 px-1.5 py-0.5 rounded ml-1">15.1K</span>
           </div>
