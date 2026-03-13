@@ -1,33 +1,43 @@
-const midtransClient = require('midtrans-client');
+import midtransClient from 'midtrans-client';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || '' // Use service role for backend
-);
-
-let snap = new midtransClient.Snap({
-    isProduction: false,
-    serverKey: process.env.MIDTRANS_SERVER_KEY,
-    clientKey: process.env.MIDTRANS_CLIENT_KEY
-});
-
 export default async function handler(req: any, res: any) {
+    console.log('--- Midtrans Webhook Received ---');
+    
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    try {
-        const notificationJson = req.body;
-        const statusResponse = await snap.transaction.notification(notificationJson);
+    const { 
+        MIDTRANS_SERVER_KEY, 
+        VITE_MIDTRANS_CLIENT_KEY,
+        VITE_SUPABASE_URL,
+        SUPABASE_SERVICE_ROLE_KEY
+    } = process.env;
 
+    const snap = new (midtransClient as any).Snap({
+        isProduction: false,
+        serverKey: MIDTRANS_SERVER_KEY,
+        clientKey: VITE_MIDTRANS_CLIENT_KEY
+    });
+
+    const supabase = createClient(VITE_SUPABASE_URL || '', SUPABASE_SERVICE_ROLE_KEY || '');
+
+    try {
+        const notification = req.body;
+        console.log('Notification Status:', notification.transaction_status);
+        console.log('Order ID:', notification.order_id);
+
+        const statusResponse = await snap.transaction.notification(notification);
+        
         const orderId = statusResponse.order_id;
         const transactionStatus = statusResponse.transaction_status;
         const fraudStatus = statusResponse.fraud_status;
-        const planId = statusResponse.metadata?.plan_id;
+        const planId = statusResponse.metadata?.plan_id; // Keep planId extraction
 
-        console.log(`Transaction notification received. Order ID: ${orderId}. Transaction status: ${transactionStatus}. Plan: ${planId}`);
+        console.log(`Transaction ID: ${statusResponse.transaction_id}, Status: ${transactionStatus}, Fraud: ${fraudStatus}`);
 
+        // Original logic for paymentStatus and expiryDate calculation
         let paymentStatus = 'pending';
         let expiryDate: Date | null = null;
 
