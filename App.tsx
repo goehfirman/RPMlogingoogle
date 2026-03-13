@@ -118,6 +118,7 @@ const App: React.FC = () => {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [userPlan, setUserPlan] = useState<string | null>(null);
   const [subscriptionUntil, setSubscriptionUntil] = useState<Date | null>(null);
+  const [profile, setProfile] = useState<any>(null);
 
   // Sync theme with body class
   useEffect(() => {
@@ -186,13 +187,14 @@ const App: React.FC = () => {
     };
   }, []);
 
-  const handleProfileUpdate = (profile: any) => {
+  const handleProfileUpdate = (profileData: any) => {
     const now = new Date();
-    const expiry = profile.subscription_until ? new Date(profile.subscription_until) : null;
-    const active = profile.is_premium && (!expiry || expiry > now);
+    const expiry = profileData.subscription_until ? new Date(profileData.subscription_until) : null;
+    const active = profileData.is_premium && (!expiry || expiry > now);
     setIsPremium(active);
-    setUserPlan(profile.plan_type || null);
+    setUserPlan(profileData.plan_type || null);
     setSubscriptionUntil(expiry);
+    setProfile(profileData);
   };
 
   const checkPremiumStatus = async (authUser: any) => {
@@ -315,8 +317,13 @@ const App: React.FC = () => {
     setIsPremium(false);
     setUserPlan(null);
     setSubscriptionUntil(null);
+    setProfile(null);
     localStorage.removeItem('rpm_result');
     setView('landing');
+  };
+
+  const getAvatarUrl = () => {
+    return profile?.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "https://i.ibb.co.com/1fQ81J6v/LOGO-PEKAYON-09.jpg";
   };
 
   return (
@@ -399,7 +406,7 @@ const App: React.FC = () => {
                   }`}
                 >
                   <img 
-                    src={user.user_metadata?.avatar_url || "https://i.ibb.co.com/1fQ81J6v/LOGO-PEKAYON-09.jpg"} 
+                    src={getAvatarUrl()} 
                     alt="User" 
                     className="w-full h-full object-cover"
                   />
@@ -575,7 +582,7 @@ const App: React.FC = () => {
                     theme === 'dark' ? 'border-slate-700/50' : 'border-slate-100'
                   }`}>
                     <img 
-                      src={user.user_metadata?.avatar_url || "https://i.ibb.co.com/1fQ81J6v/LOGO-PEKAYON-09.jpg"} 
+                      src={getAvatarUrl()} 
                       alt="Profile" 
                       className="w-full h-full object-cover"
                     />
