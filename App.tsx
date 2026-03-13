@@ -7,7 +7,7 @@ import { generateRPM } from './services/geminiService';
 import { 
   Cpu, Zap, Clock, Calendar, Lock, ArrowRight, ShieldCheck, 
   FileText, Settings, LogIn, LogOut, User as UserIcon,
-  LayoutGrid, BookOpen, Star, MessageSquare, Sun, Users
+  LayoutGrid, BookOpen, Star, MessageSquare, Sun, Users, HelpCircle, Moon
 } from 'lucide-react';
 import { supabase } from './services/supabaseClient';
 import { initializeSnap, createPaymentTransaction } from './services/paymentService';
@@ -103,6 +103,7 @@ const App: React.FC = () => {
   const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
   const [pendingApiKey, setPendingApiKey] = useState<string>('');
   const [view, setView] = useState<'landing' | 'form'>('landing');
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   // Auth & Snap Initialization
   useEffect(() => {
@@ -237,21 +238,80 @@ const App: React.FC = () => {
             <button className="p-2 text-slate-400 hover:text-white transition-colors">
               <Sun size={20} />
             </button>
-            <button 
-              onClick={() => setShowPricingModal(true)}
-              className="hidden sm:block text-xs font-bold text-slate-400 hover:text-white px-4 transition-colors"
-            >
-              Lihat Paket
-            </button>
+            
             {user ? (
-              <div className="flex items-center gap-3 bg-slate-800/50 border border-slate-700/50 py-1.5 pl-4 pr-1.5 rounded-full">
-                <span className="text-xs font-bold text-slate-300">{user.email?.split('@')[0]}</span>
+              <div className="flex items-center gap-3 relative">
+                {/* Status Badges */}
+                <div className="hidden sm:flex items-center gap-2 mr-2">
+                  <div className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                    isPremium ? 'bg-orange-500/20 text-orange-500 border border-orange-500/30' : 'bg-slate-800 text-slate-400 border border-slate-700'
+                  }`}>
+                    {isPremium ? 'Premium' : 'Free'}
+                  </div>
+                  {!isPremium && (
+                    <button 
+                      onClick={() => setShowPricingModal(true)}
+                      className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all"
+                    >
+                      Upgrade
+                    </button>
+                  )}
+                </div>
+
+                {/* Avatar / Trigger */}
                 <button 
-                  onClick={handleLogout}
-                  className="bg-red-500/10 text-red-500 p-2 rounded-full hover:bg-red-500/20 transition-all"
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="w-10 h-10 rounded-full border-2 border-slate-700/50 overflow-hidden hover:border-orange-500 transition-all shadow-lg"
                 >
-                  <LogOut size={16} />
+                  <img 
+                    src={user.user_metadata?.avatar_url || "https://i.ibb.co.com/1fQ81J6v/LOGO-PEKAYON-09.jpg"} 
+                    alt="User" 
+                    className="w-full h-full object-cover"
+                  />
                 </button>
+
+                {/* Dropdown Menu */}
+                {showUserMenu && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setShowUserMenu(false)}
+                    ></div>
+                    <div className="absolute right-0 top-full mt-3 w-64 bg-[#1E293B] border border-slate-700/50 rounded-2xl shadow-2xl z-20 overflow-hidden animate-fade-in-up">
+                      {/* User Info */}
+                      <div className="p-4 border-b border-slate-700/50 bg-slate-800/20">
+                        <p className="text-sm font-bold text-white truncate">{user.user_metadata?.full_name || user.email?.split('@')[0]}</p>
+                        <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
+                      </div>
+
+                      {/* Menu Items */}
+                      <div className="p-2">
+                        <button className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-xl transition-all">
+                          <Settings size={16} />
+                          Pengaturan
+                        </button>
+                        <button className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-xl transition-all">
+                          <HelpCircle size={16} />
+                          Bantuan
+                        </button>
+                        <button className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-700/50 rounded-xl transition-all">
+                          <Sun size={16} />
+                          Light mode
+                        </button>
+                      </div>
+
+                      <div className="p-2 border-t border-slate-700/50">
+                        <button 
+                          onClick={() => { handleLogout(); setShowUserMenu(false); }}
+                          className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-bold text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-all"
+                        >
+                          <LogOut size={16} />
+                          Sign out
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             ) : (
               <button 
